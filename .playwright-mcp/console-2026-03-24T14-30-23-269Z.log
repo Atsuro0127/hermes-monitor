@@ -1,0 +1,13 @@
+[    1326ms] [ERROR] Error: <svg> attribute x: Unexpected end of attribute. Expected length, "". @ https://socialdata.tools/:32
+[    1326ms] [ERROR] Error: <svg> attribute x: Unexpected end of attribute. Expected length, "". @ https://socialdata.tools/:32
+[    1440ms] [ERROR] Hydration completed but contains mismatches. @ https://socialdata.tools/_nuxt/BnxHNQ1t.js:1
+[    2057ms] [WARNING] <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes"> @ https://socialdata.tools/:0
+[    5809ms] [ERROR] %c%d font-size:0;color:transparent NaN @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/ov2/av0/rch/veqvg/0x4AAAAAAAO9Ypao7EKFiNuJ/light/fbE/new/normal?lang=auto:0
+[    5809ms] [ERROR] %c%d font-size:0;color:transparent NaN @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/ov2/av0/rch/veqvg/0x4AAAAAAAO9Ypao7EKFiNuJ/light/fbE/new/normal?lang=auto:0
+[    5814ms] [WARNING] %c%d font-size:0;color:transparent NaN @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/ov2/av0/rch/veqvg/0x4AAAAAAAO9Ypao7EKFiNuJ/light/fbE/new/normal?lang=auto:0
+[    5814ms] [WARNING] %c%d font-size:0;color:transparent NaN @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/ov2/av0/rch/veqvg/0x4AAAAAAAO9Ypao7EKFiNuJ/light/fbE/new/normal?lang=auto:0
+[    5872ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/pat/9e165fb908d8decd/1774362628272/f2703436744b4ef8a159868b0146c5a1221b5d710fe18782615803a243e5fad6/qbHxF6BOtakSC6W:0
+[    6393ms] [ERROR]  Note that 'script-src' was not explicitly set, so 'default-src' is used as a fallback. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/ov2/av0/rch/veqvg/0x4AAAAAAAO9Ypao7EKFiNuJ/light/fbE/new/normal?lang=auto:0
+[    9848ms] [WARNING] The resource https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/cmg/1 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/ov2/av0/rch/veqvg/0x4AAAAAAAO9Ypao7EKFiNuJ/light/fbE/new/normal?lang=auto:0
+[   36863ms] [WARNING] <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes"> @ https://socialdata.tools/app/dashboard:0
+[   72011ms] [WARNING] There are no focusable elements inside the <FocusTrap /> @ https://socialdata.tools/_nuxt/DlqSk0SL.js:0

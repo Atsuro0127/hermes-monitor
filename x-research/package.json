@@ -1,0 +1,17 @@
+{
+  "name": "x-research",
+  "version": "1.0.0",
+  "scripts": {
+    "collect": "python collect.py",
+    "research": "ts-node src/index.ts",
+    "analyze": "ts-node src/analyze.ts"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.4.0"
+  }
+}

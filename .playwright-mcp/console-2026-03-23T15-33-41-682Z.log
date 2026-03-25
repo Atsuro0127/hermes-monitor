@@ -1,0 +1,3 @@
+[    3814ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://o30969.ingest.us.sentry.io/api/4510223984230400/envelope/?sentry_version=7&sentry_key=fe82eebe7313fe8e9c6e04a1be311e75&sentry_client=sentry.javascript.react%2F10.45.0:0
+[    6274ms] [ERROR] Failed to load resource: the server responded with a status of 422 () @ https://console.x.com/api/accounts/2036103649596788737/credits/auto_recharge:0
+[   63911ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://console.x.com/api/accounts/2036103649596788737/projects/2036104235339657216/client-applications:0

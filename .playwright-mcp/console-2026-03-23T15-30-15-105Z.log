@@ -1,0 +1,28 @@
+[     789ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://developer.x.com/etc/designs/developer2-twitter/public/css/data-protection.css:0
+[     790ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://developer.x.com/etc/designs/developer2-twitter/public/js/data-protection.js:0
+[     879ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ https://sentry.io/api/1819089/envelope/?sentry_key=ec08c1e7b72a4d64a4d2848effd5f0f2&sentry_version=7:0
+[    3910ms] [ERROR] Failed to load resource: the server responded with a status of 429 () @ https://o30969.ingest.us.sentry.io/api/4510223984230400/envelope/?sentry_version=7&sentry_key=fe82eebe7313fe8e9c6e04a1be311e75&sentry_client=sentry.javascript.react%2F10.45.0:0
+[  101865ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://console.x.com/api/accounts:0
+[  101869ms] [ERROR] Failed to create account AxiosError: Request failed with status code 400
+    at eI (https://ton.twimg.com/dataproducts/developerconsole/_next/static/chunks/4197-ae036fcdf08ba26c.js:1:53510)
+    at XMLHttpRequest.g (https://ton.twimg.com/dataproducts/developerconsole/_next/static/chunks/4197-ae036fcdf08ba26c.js:1:57904)
+    at tt.request (https://ton.twimg.com/dataproducts/developerconsole/_next/static/chunks/4197-ae036fcdf08ba26c.js:1:66444)
+    at async Object.mutationFn (https://ton.twimg.com/dataproducts/developerconsole/_next/static/chunks/app/onboarding/page-c6a4024c331f3d7d.js:1:11210) @ https://ton.twimg.com/dataproducts/developerconsole/_next/static/chunks/8690-f994fa001a46c820.js:5
+[  121098ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://console.x.com/api/accounts:0
+[  121099ms] [ERROR] Failed to create account AxiosError: Request failed with status code 500
+    at eI (https://ton.twimg.com/dataproducts/developerconsole/_next/static/chunks/4197-ae036fcdf08ba26c.js:1:53510)
+    at XMLHttpRequest.g (https://ton.twimg.com/dataproducts/developerconsole/_next/static/chunks/4197-ae036fcdf08ba26c.js:1:57904)
+    at tt.request (https://ton.twimg.com/dataproducts/developerconsole/_next/static/chunks/4197-ae036fcdf08ba26c.js:1:66444)
+    at async Object.mutationFn (https://ton.twimg.com/dataproducts/developerconsole/_next/static/chunks/app/onboarding/page-c6a4024c331f3d7d.js:1:11210) @ https://ton.twimg.com/dataproducts/developerconsole/_next/static/chunks/8690-f994fa001a46c820.js:5
+[  146049ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://console.x.com/api/accounts:0
+[  146051ms] [ERROR] Failed to create account AxiosError: Request failed with status code 500
+    at eI (https://ton.twimg.com/dataproducts/developerconsole/_next/static/chunks/4197-ae036fcdf08ba26c.js:1:53510)
+    at XMLHttpRequest.g (https://ton.twimg.com/dataproducts/developerconsole/_next/static/chunks/4197-ae036fcdf08ba26c.js:1:57904)
+    at tt.request (https://ton.twimg.com/dataproducts/developerconsole/_next/static/chunks/4197-ae036fcdf08ba26c.js:1:66444)
+    at async Object.mutationFn (https://ton.twimg.com/dataproducts/developerconsole/_next/static/chunks/app/onboarding/page-c6a4024c331f3d7d.js:1:11210) @ https://ton.twimg.com/dataproducts/developerconsole/_next/static/chunks/8690-f994fa001a46c820.js:5
+[  188761ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://console.x.com/api/accounts:0
+[  188763ms] [ERROR] Failed to create account AxiosError: Request failed with status code 500
+    at eI (https://ton.twimg.com/dataproducts/developerconsole/_next/static/chunks/4197-ae036fcdf08ba26c.js:1:53510)
+    at XMLHttpRequest.g (https://ton.twimg.com/dataproducts/developerconsole/_next/static/chunks/4197-ae036fcdf08ba26c.js:1:57904)
+    at tt.request (https://ton.twimg.com/dataproducts/developerconsole/_next/static/chunks/4197-ae036fcdf08ba26c.js:1:66444)
+    at async Object.mutationFn (https://ton.twimg.com/dataproducts/developerconsole/_next/static/chunks/app/onboarding/page-c6a4024c331f3d7d.js:1:11210) @ https://ton.twimg.com/dataproducts/developerconsole/_next/static/chunks/8690-f994fa001a46c820.js:5

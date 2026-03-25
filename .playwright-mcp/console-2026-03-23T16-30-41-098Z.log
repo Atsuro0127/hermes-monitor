@@ -1,0 +1,60 @@
+[     980ms] [ERROR] [REACT_QUERY_CLIENT] QueryClient error: TypeError: Failed to fetch
+    at https://platform.claude.com/_next/static/chunks/35246-6e10240d7883ed54.js:14:1612
+    at https://platform.claude.com/_next/static/chunks/91606-252c47001a1bab08.js:1:16241
+    at https://platform.claude.com/_next/static/chunks/91606-252c47001a1bab08.js:1:16436
+    at https://platform.claude.com/_next/static/chunks/91606-252c47001a1bab08.js:1:18414
+    at Object.a [as fn] (https://platform.claude.com/_next/static/chunks/66043-c9862cd5196ff668.js:1:28715)
+    at m (https://platform.claude.com/_next/static/chunks/66043-c9862cd5196ff668.js:1:1988)
+    at Object.start (https://platform.claude.com/_next/static/chunks/66043-c9862cd5196ff668.js:1:2472)
+    at o.fetch (https://platform.claude.com/_next/static/chunks/66043-c9862cd5196ff668.js:1:29783)
+    at #b (https://platform.claude.com/_next/static/chunks/66043-c9862cd5196ff668.js:1:8304)
+    at c.onSubscribe (https://platform.claude.com/_next/static/chunks/66043-c9862cd5196ff668.js:1:6246)
+    at c.subscribe (https://platform.claude.com/_next/static/chunks/66043-c9862cd5196ff668.js:1:2669)
+    at https://platform.claude.com/_next/static/chunks/66043-c9862cd5196ff668.js:1:4943
+    at av (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:56499)
+    at o1 (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:89711)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106361)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106348)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106348)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106348)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106348)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106606)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106606)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106348)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106606)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106348)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106348)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106348)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106348)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106606)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106348)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106348)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106606)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106348)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106606)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106606)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106348)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106606)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106348)
+    at e (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106348)
+    at uE (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:106632)
+    at ux (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:105487)
+    at uE (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:105648)
+    at ux (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:105487)
+    at uE (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:105583)
+    at ux (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:105487)
+    at uE (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:105583)
+    at ux (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:105487)
+    at uE (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:105648)
+    at ux (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:105487)
+    at uE (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:105583)
+    at ux (https://platform.claude.com/_next/static/chunks/87c73c54-876ea14b3e196b63.js:1:105487) @ https://platform.claude.com/_next/static/chunks/35246-6e10240d7883ed54.js:13
+[   24417ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://platform.claude.com/api/organizations/e468a59e-7aef-4d1f-8205-407b6346c066/workbench/generate_title:0
+[   24418ms] [ERROR] [WORKBENCH] The completion streaming API returned an error i: This model does not support assistant message prefill. The conversation must end with a user message.
+    at r (https://platform.claude.com/_next/static/chunks/91606-252c47001a1bab08.js:1:15107)
+    at onopen (https://platform.claude.com/_next/static/chunks/98852-16c3f542fcb1821a.js:1:15063)
+    at async v (https://platform.claude.com/_next/static/chunks/45558-8837908f69f422c1.js:1:50246) @ https://platform.claude.com/_next/static/chunks/35246-6e10240d7883ed54.js:13
+[   24428ms] i: This model does not support assistant message prefill. The conversation must end with a user message.
+    at r (https://platform.claude.com/_next/static/chunks/91606-252c47001a1bab08.js:1:15107)
+    at onopen (https://platform.claude.com/_next/static/chunks/98852-16c3f542fcb1821a.js:1:15063)
+    at async v (https://platform.claude.com/_next/static/chunks/45558-8837908f69f422c1.js:1:50246)
