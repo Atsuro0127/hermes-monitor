@@ -1,8 +1,13 @@
 """
-score_posts.py — 投稿を採点し、7点未満なら自動で再生成してキューに追加する。
+score_posts.py — 投稿を Agent Team で採点し、PASSしたものを pending_review.txt に書き戻す。
 
 フロー:
-  generate_posts.py → pending_review.txt → [このスクリプト] → queue.json
+  generate_posts.py → pending_review.txt → [このスクリプト] → pending_review.txt → approve.py → queue.json
+
+採点構成:
+  採点役A（Claude Sonnet）: 採点基準 + 調査データで微調整
+  採点役B（Claude Sonnet）: ターゲット目線（コンサル転職志望の会社員）
+  両方7点以上でPASS、FAILなら Opus に差し戻し（最大2回）
 
 使い方:
   python score_posts.py
@@ -19,7 +24,6 @@ os.chdir(Path(__file__).parent)
 load_dotenv()
 
 PENDING_FILE         = "pending_review.txt"
-QUEUE_FILE           = "queue.json"
 SCORING_CONTEXT_FILE = "scoring_context.json"
 PASS_SCORE           = 7
 MAX_RETRIES          = 2
@@ -161,8 +165,8 @@ def validate_score_b(raw: dict) -> bool:
 
 
 def is_pass(score_a_total: int, score_b_total: int) -> bool:
-    """A・B両方7点以上でPASS"""
-    return score_a_total >= 7 and score_b_total >= 7
+    """A・B両方PASS_SCORE点以上でPASS"""
+    return score_a_total >= PASS_SCORE and score_b_total >= PASS_SCORE
 
 
 def build_retry_feedback(reason_a: str, reason_b: str) -> str:
@@ -246,7 +250,10 @@ JSONのみ出力してください。"""
         raw = raw.split("```")[1]
         if raw.startswith("json"):
             raw = raw[4:]
-    return json.loads(raw.strip())
+    data = json.loads(raw.strip())
+    if not validate_score_b(data):
+        raise ValueError(f"採点役Bのtotalが範囲外: {data.get('total')}")
+    return data
 
 
 def revise_post_with_opus(client, text: str, feedback: str) -> str:
@@ -274,18 +281,6 @@ def revise_post_with_opus(client, text: str, feedback: str) -> str:
         messages=[{"role": "user", "content": prompt}],
     )
     return res.content[0].text.strip()
-
-
-def load_queue() -> list:
-    if not Path(QUEUE_FILE).exists():
-        return []
-    with open(QUEUE_FILE, encoding="utf-8") as f:
-        return json.load(f)
-
-
-def save_queue(queue: list):
-    with open(QUEUE_FILE, "w", encoding="utf-8") as f:
-        json.dump(queue, f, ensure_ascii=False, indent=2)
 
 
 def main():
@@ -336,10 +331,7 @@ def main():
 
             # 採点役B
             try:
-                score_b_raw = score_post_b(client, text)
-                if not validate_score_b(score_b_raw):
-                    raise ValueError(f"採点役Bのtotalが範囲外: {score_b_raw.get('total')}")
-                score_b = score_b_raw
+                score_b = score_post_b(client, text)
             except Exception as e:
                 print(f"  [ERROR] 採点役B呼び出し失敗 (試行{attempt + 1}): {e}")
                 score_b = {"total": 0, "reason": "採点エラー"}
@@ -347,8 +339,8 @@ def main():
             final_score_a = score_a
             final_score_b = score_b
 
-            label_a = "PASS" if score_a["total"] >= 7 else "FAIL"
-            label_b = "PASS" if score_b["total"] >= 7 else "FAIL"
+            label_a = "PASS" if score_a["total"] >= PASS_SCORE else "FAIL"
+            label_b = "PASS" if score_b["total"] >= PASS_SCORE else "FAIL"
             print(f"  採点A: {score_a['total']}/10点 [{label_a}]  "
                   f"A={score_a['score_A']} B={score_a['score_B']} "
                   f"C={score_a['score_C']} D={score_a['score_D']} "
@@ -356,6 +348,11 @@ def main():
             print(f"  採点A理由: {score_a['reason']}")
             print(f"  採点B: {score_b['total']}/10点 [{label_b}]")
             print(f"  採点B理由: {score_b['reason']}")
+
+            # 採点エラーの場合はリトライしない（OpusにエラーフィードバックでAPIを無駄遣いしない）
+            if score_a["reason"] == "採点エラー" or score_b["reason"] == "採点エラー":
+                print(f"  [ERROR] 採点エラーのためこの投稿をスキップします。")
+                break
 
             if is_pass(score_a["total"], score_b["total"]):
                 passed = True
