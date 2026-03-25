@@ -170,14 +170,18 @@ def build_retry_feedback(reason_a: str, reason_b: str) -> str:
     return f"採点役A（品質基準）の指摘: {reason_a}\n採点役B（ターゲット目線）の指摘: {reason_b}"
 
 
-def score_post(client, text: str, context: str = "") -> dict:
-    """投稿を採点して結果を返す"""
+def score_post_a(client, text: str, context: str = "") -> dict:
+    """採点役A: 既存基準 + scoring_contextで微調整して採点（Claude Sonnet）"""
+    dynamic_note = ""
+    if context:
+        dynamic_note = f"\n\n## 今週のバズ傾向（採点の補足観点）\n{context}\n上記の傾向を踏まえ、採点基準の各軸を微調整して評価すること。"
+
     prompt = f"""以下の投稿を採点してください。
 
 {SCORING_CRITERIA}
 
 {USER_STYLE}
-{context}
+{dynamic_note}
 
 ## 採点対象の投稿
 {text}
@@ -196,23 +200,17 @@ def score_post(client, text: str, context: str = "") -> dict:
 JSONのみ出力してください。"""
 
     res = client.messages.create(
-        model="claude-haiku-4-5-20251001",
-        max_tokens=300,
+        model="claude-sonnet-4-6",
+        max_tokens=400,
         messages=[{"role": "user", "content": prompt}],
     )
     raw = res.content[0].text.strip()
-    # コードブロックがあれば除去
     if raw.startswith("```"):
         raw = raw.split("```")[1]
         if raw.startswith("json"):
             raw = raw[4:]
     data = json.loads(raw.strip())
-    # キー欠落の防御処理
-    for key, default in [("score_A", 0), ("score_B", 0), ("score_C", 0), ("score_D", 0), ("score_E", 0), ("reason", "")]:
-        data.setdefault(key, default)
-    if "total" not in data:
-        data["total"] = data["score_A"] + data["score_B"] + data["score_C"] + data["score_D"] + data["score_E"]
-    return data
+    return normalize_score_a(data)
 
 
 def revise_post(client, text: str, score_result: dict, context: str = "") -> str:
@@ -291,7 +289,7 @@ def main():
         score_result = None
 
         for attempt in range(MAX_RETRIES + 1):
-            score_result = score_post(client, text, context)
+            score_result = score_post_a(client, text, context)
             total = score_result["total"]
             label = "PASS" if total >= PASS_SCORE else "FAIL"
             print(f"  採点: {total}/10点 [{label}]  "
