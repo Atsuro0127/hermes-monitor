@@ -213,27 +213,63 @@ JSONのみ出力してください。"""
     return normalize_score_a(data)
 
 
-def revise_post(client, text: str, score_result: dict, context: str = "") -> str:
-    """採点結果を踏まえて投稿を改善する"""
-    prompt = f"""以下の投稿が採点で{score_result['total']}点でした。
-改善点: {score_result['reason']}
+def score_post_b(client, text: str) -> dict:
+    """採点役B: ターゲット目線のみで採点（Claude Sonnet、データなし）"""
+    prompt = f"""あなたは「コンサル転職・キャリアアップを目指す会社員」です。
+以下のXへの投稿を読んで、素直な感想として採点してください。
+
+採点基準：
+- 10点: 強く共感・シェアしたい
+- 7〜9点: 刺さった・参考になった
+- 4〜6点: まあまあ・普通
+- 1〜3点: ピンとこない・スルーする
+- 0点: 全く刺さらない
+
+## 採点対象の投稿
+{text}
+
+## 出力形式（JSON）
+{{
+  "total": <0〜10の整数>,
+  "reason": "<50字以内で刺さった理由または刺さらなかった理由>"
+}}
+
+JSONのみ出力してください。"""
+
+    res = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=200,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    raw = res.content[0].text.strip()
+    if raw.startswith("```"):
+        raw = raw.split("```")[1]
+        if raw.startswith("json"):
+            raw = raw[4:]
+    return json.loads(raw.strip())
+
+
+def revise_post_with_opus(client, text: str, feedback: str) -> str:
+    """採点役A・Bのフィードバックを受けてOpusが投稿を再生成"""
+    prompt = f"""以下の投稿が採点で不合格でした。
+
+{feedback}
 
 {SCORING_CRITERIA}
 
 {USER_STYLE}
 
 {BUZZ_PATTERNS}
-{context}
 
 ## 元の投稿
 {text}
 
-上記の採点基準で7点以上になるよう投稿を改善してください。
-元の思想・メッセージは保ちながら、フック・具体性・読みやすさを改善してください。
+上記のフィードバックを踏まえ、採点基準でA・B両方7点以上になるよう投稿を改善してください。
+元の思想・メッセージは保ちながら、フック・具体性・ターゲットへの共感を改善してください。
 改善後の投稿本文のみ出力してください（説明不要）。"""
 
     res = client.messages.create(
-        model="claude-haiku-4-5-20251001",
+        model="claude-opus-4-6",
         max_tokens=500,
         messages=[{"role": "user", "content": prompt}],
     )
@@ -254,7 +290,7 @@ def save_queue(queue: list):
 
 def main():
     print("=" * 50)
-    print("投稿採点 & キュー追加スクリプト")
+    print("投稿採点 & キュー追加スクリプト（Agent Team）")
     print("=" * 50)
 
     if not Path(PENDING_FILE).exists():
@@ -277,7 +313,7 @@ def main():
     client = get_client()
     context = load_scoring_context()
     if context:
-        print("  → scoring_context.json を採点基準に反映しました\n")
+        print("  → scoring_context.json を採点役Aの基準に反映しました\n")
 
     approved = []
     results = []
@@ -286,55 +322,84 @@ def main():
         print(f"【{i}/{len(posts)}】{original_text[:40].replace(chr(10), ' ')}...")
 
         text = original_text
-        score_result = None
+        final_score_a = None
+        final_score_b = None
+        passed = False
 
         for attempt in range(MAX_RETRIES + 1):
-            score_result = score_post_a(client, text, context)
-            total = score_result["total"]
-            label = "PASS" if total >= PASS_SCORE else "FAIL"
-            print(f"  採点: {total}/10点 [{label}]  "
-                  f"A={score_result['score_A']} B={score_result['score_B']} "
-                  f"C={score_result['score_C']} D={score_result['score_D']} "
-                  f"E={score_result['score_E']}")
-            print(f"  理由: {score_result['reason']}")
+            # 採点役A
+            try:
+                score_a = score_post_a(client, text, context)
+            except Exception as e:
+                print(f"  [ERROR] 採点役A呼び出し失敗 (試行{attempt + 1}): {e}")
+                score_a = {"total": 0, "score_A": 0, "score_B": 0, "score_C": 0, "score_D": 0, "score_E": 0, "reason": "採点エラー"}
 
-            if total >= PASS_SCORE:
+            # 採点役B
+            try:
+                score_b_raw = score_post_b(client, text)
+                if not validate_score_b(score_b_raw):
+                    raise ValueError(f"採点役Bのtotalが範囲外: {score_b_raw.get('total')}")
+                score_b = score_b_raw
+            except Exception as e:
+                print(f"  [ERROR] 採点役B呼び出し失敗 (試行{attempt + 1}): {e}")
+                score_b = {"total": 0, "reason": "採点エラー"}
+
+            final_score_a = score_a
+            final_score_b = score_b
+
+            label_a = "PASS" if score_a["total"] >= 7 else "FAIL"
+            label_b = "PASS" if score_b["total"] >= 7 else "FAIL"
+            print(f"  採点A: {score_a['total']}/10点 [{label_a}]  "
+                  f"A={score_a['score_A']} B={score_a['score_B']} "
+                  f"C={score_a['score_C']} D={score_a['score_D']} "
+                  f"E={score_a['score_E']}")
+            print(f"  採点A理由: {score_a['reason']}")
+            print(f"  採点B: {score_b['total']}/10点 [{label_b}]")
+            print(f"  採点B理由: {score_b['reason']}")
+
+            if is_pass(score_a["total"], score_b["total"]):
+                passed = True
                 break
 
             if attempt < MAX_RETRIES:
-                print(f"  → 7点未満のため自動改善中... (試行 {attempt + 1}/{MAX_RETRIES})")
-                text = revise_post(client, text, score_result, context)
-                print(f"  改善後: {text[:60].replace(chr(10), ' ')}...")
+                print(f"  → FAIL。生成役に差し戻し中... (試行 {attempt + 1}/{MAX_RETRIES})")
+                feedback = build_retry_feedback(score_a["reason"], score_b["reason"])
+                try:
+                    text = revise_post_with_opus(client, text, feedback)
+                    print(f"  再生成: {text[:60].replace(chr(10), ' ')}...")
+                except Exception as e:
+                    print(f"  [ERROR] 再生成失敗: {e}。この投稿をスキップします。")
+                    break
 
         results.append({
             "original": original_text,
             "final_text": text,
-            "score": score_result["total"],
-            "passed": score_result["total"] >= PASS_SCORE,
+            "score_a": final_score_a["total"] if final_score_a else 0,
+            "score_b": final_score_b["total"] if final_score_b else 0,
+            "passed": passed,
         })
 
-        if score_result["total"] >= PASS_SCORE:
+        if passed:
             approved.append({"text": text, "source": "ai_generated"})
-            print(f"  → キューに追加")
+            print(f"  → PASS。保存します")
         else:
-            print(f"  → {MAX_RETRIES}回改善しても{PASS_SCORE}点未満のためスキップ")
+            print(f"  → {MAX_RETRIES}回差し戻しても不合格のためスキップ")
         print()
 
-    # 7点以上のものだけ pending_review.txt に戻す（ユーザー確認用）
-    passed = sum(1 for r in results if r["passed"])
+    passed_count = sum(1 for r in results if r["passed"])
     print("=" * 50)
-    print(f"採点結果: {passed}/{len(posts)} 件が7点以上")
+    print(f"採点結果: {passed_count}/{len(posts)} 件がPASS")
 
     if approved:
         review_content = "\n---\n".join(a["text"] for a in approved)
         with open(PENDING_FILE, "w", encoding="utf-8") as f:
             f.write(review_content)
-        print(f"\n{PENDING_FILE} に {passed} 件を保存しました。")
+        print(f"\n{PENDING_FILE} に {passed_count} 件を保存しました。")
         print("内容を確認後、approve.py を実行してキューに追加してください。")
     else:
         with open(PENDING_FILE, "w", encoding="utf-8") as f:
             f.write("")
-        print("\n7点以上の投稿がありませんでした。")
+        print("\nPASSした投稿がありませんでした。")
 
     print("=" * 50)
 
