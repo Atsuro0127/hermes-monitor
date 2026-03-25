@@ -1,5 +1,4 @@
 """score_posts.py Agent Team のテスト"""
-import json
 import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -41,6 +40,13 @@ def test_score_b_non_integer():
     """採点役Bのtotalが整数でなければFalse"""
     from score_posts import validate_score_b
     assert validate_score_b({"total": 7.5, "reason": "ng"}) is False
+
+
+def test_score_b_rejects_bool():
+    """採点役BのtotalがTrue/Falseの場合はFalse（boolはintのサブクラスだが除外する）"""
+    from score_posts import validate_score_b
+    assert validate_score_b({"total": True, "reason": "ng"}) is False
+    assert validate_score_b({"total": False, "reason": "ng"}) is False
 
 
 def test_pass_requires_both_agents_7_or_above():
