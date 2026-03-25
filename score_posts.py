@@ -149,6 +149,30 @@ def get_client():
     return anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
 
+def normalize_score_a(raw: dict) -> dict:
+    """採点役AのtotalをLLM自己申告値ではなくscore_A〜Eの合計で上書きする"""
+    for key, default in [("score_A", 0), ("score_B", 0), ("score_C", 0), ("score_D", 0), ("score_E", 0), ("reason", "")]:
+        raw.setdefault(key, default)
+    raw["total"] = raw["score_A"] + raw["score_B"] + raw["score_C"] + raw["score_D"] + raw["score_E"]
+    return raw
+
+
+def validate_score_b(raw: dict) -> bool:
+    """採点役Bのtotalが0〜10の整数かチェック（boolは除外）"""
+    total = raw.get("total")
+    return type(total) is int and 0 <= total <= 10
+
+
+def is_pass(score_a_total: int, score_b_total: int) -> bool:
+    """A・B両方7点以上でPASS"""
+    return score_a_total >= 7 and score_b_total >= 7
+
+
+def build_retry_feedback(reason_a: str, reason_b: str) -> str:
+    """差し戻し用フィードバック文字列を生成"""
+    return f"採点役A（品質基準）の指摘: {reason_a}\n採点役B（ターゲット目線）の指摘: {reason_b}"
+
+
 def score_post(client, text: str, context: str = "") -> dict:
     """投稿を採点して結果を返す"""
     prompt = f"""以下の投稿を採点してください。
