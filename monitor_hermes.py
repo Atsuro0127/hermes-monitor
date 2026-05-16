@@ -2,13 +2,12 @@
 monitor_hermes.py — エルメス公式サイトでベアンのキーケース在庫を監視し、
 新たに出品されたらLINEで通知する。
 
-Windowsタスクスケジューラで10分ごとに実行する。
+Windows: タスクスケジューラで実行
+GitHub Actions: .github/workflows/hermes_monitor.yml で5分ごとに実行
 """
 import asyncio
 import json
 import os
-import sys
-import io
 import urllib.request
 from datetime import datetime
 from pathlib import Path
@@ -16,20 +15,16 @@ from pathlib import Path
 from playwright.async_api import async_playwright
 from dotenv import load_dotenv
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
-sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8")
-
-os.chdir(Path(__file__).parent)
 load_dotenv()
 
+BASE_DIR = Path(__file__).parent
 SEARCH_URL = "https://www.hermes.com/jp/ja/search/?s=ベアン"
-# キーケースを示すキーワード
 KEY_KEYWORDS = ["キー", "porte-clés", "porte clés", "porteclés"]
-STATE_FILE = "hermes_monitor_state.json"
+STATE_FILE = BASE_DIR / "hermes_monitor_state.json"
 
 
 def load_state() -> dict:
-    if not Path(STATE_FILE).exists():
+    if not STATE_FILE.exists():
         return {"seen_ids": []}
     with open(STATE_FILE, encoding="utf-8") as f:
         return json.load(f)
@@ -79,13 +74,17 @@ def send_line_notification(items: list):
 
 
 async def check():
-    user_data_dir = os.path.expandvars(r"%LOCALAPPDATA%\ms-playwright\mcp-chrome-profile")
-
     async with async_playwright() as p:
-        context = await p.chromium.launch_persistent_context(
-            user_data_dir=user_data_dir,
+        browser = await p.chromium.launch(
             headless=True,
-            args=["--disable-blink-features=AutomationControlled"],
+            args=[
+                "--disable-blink-features=AutomationControlled",
+                "--no-sandbox",
+                "--disable-dev-shm-usage",
+            ],
+        )
+        context = await browser.new_context(
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         )
         page = await context.new_page()
         await page.goto(SEARCH_URL, wait_until="domcontentloaded")
@@ -123,7 +122,7 @@ async def check():
                         "price": "",
                     })
 
-        await context.close()
+        await browser.close()
 
     return items
 
