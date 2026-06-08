@@ -2,7 +2,7 @@ name: Hermes Monitor
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # 5分ごと
+    - cron: '* * * * *'  # 1分ごと
   workflow_dispatch:        # GitHub画面から手動実行も可能
 
 permissions:
