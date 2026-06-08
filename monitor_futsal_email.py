@@ -139,10 +139,12 @@ def check():
         print(f"[ERROR] Gmail接続失敗: {e}")
         return
 
-    # 未読メールを取得（全件でも可）
-    _, data = mail.search(None, "UNSEEN")
+    # 過去2日間の未読メールのみ取得（全件取得はタイムアウトするため）
+    from datetime import timedelta
+    since_str = (datetime.now() - timedelta(days=2)).strftime("%d-%b-%Y")
+    _, data = mail.search(None, "UNSEEN", f'SINCE "{since_str}"')
     uids = data[0].split()
-    print(f"[INFO] 未読メール {len(uids)} 件を確認")
+    print(f"[INFO] 過去2日間の未読メール {len(uids)} 件を確認")
 
     found = False
     for uid in uids:
