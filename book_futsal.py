@@ -172,6 +172,13 @@ async def run():
                 return False
 
             print("[INFO] 空きあり！予約を実行します。")
+            # 空き検知を即通知
+            send_line_notification(
+                "🔔 空きが出ました！今すぐ自動予約を実行中...\n\n"
+                "【初心者限定】フットサルクリニック ※サポート\n"
+                "2026/06/20（土）19:00〜21:00\n\n"
+                "完了したらまたお知らせします！"
+            )
 
             # 予約実行
             success = await book(page)
@@ -188,7 +195,7 @@ async def run():
                 return True
             else:
                 send_line_notification(
-                    "⚠️ 空きを検知しましたが予約に失敗しました。\n急いで手動で予約してください！\n" + EVENT_URL
+                    "⚠️ 空きを検知しましたが予約に失敗しました！\n急いで手動で予約してください！\n" + EVENT_URL
                 )
                 return False
 

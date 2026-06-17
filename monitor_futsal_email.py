@@ -166,8 +166,9 @@ def check():
             print(f"[HIT] 対象メール発見: {subject}")
             notified_uids.add(uid_str)
             found = True
-            # メール検知 → 即予約実行
+            # メール検知 → 即通知 → 予約実行
             import asyncio, book_futsal
+            send_line_notification(subject, sender, date_str + "\n\n⚡ 自動予約を実行中...完了したらまたお知らせします！")
             print("[INFO] 予約処理を起動します")
             asyncio.run(book_futsal.run())
 
