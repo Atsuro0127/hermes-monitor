@@ -105,10 +105,23 @@ async def check_vacancy(page) -> bool:
 
 async def book(page) -> bool:
     """予約を実行する。成功したらTrue"""
-    # STEP1: 料金プラン選択
-    await page.goto(BOOKING_URL)
+    # イベントページの「申し込む」ボタンから遷移（CSRF対策）
+    await page.goto(EVENT_URL)
     await page.wait_for_load_state("networkidle")
 
+    apply_link = page.locator(f'a[href*="/booking/event/{EVENT_ID}/"]').first
+    if await apply_link.count() == 0:
+        print("[ERROR] 申し込むボタンが見つかりません（満席になった可能性）")
+        return False
+    await apply_link.click()
+    await page.wait_for_load_state("networkidle")
+
+    # customer-type ページを経由する場合はスキップ
+    if "customer-type" in page.url:
+        await page.goto(page.url.replace("customer-type", "booking-info"))
+        await page.wait_for_load_state("networkidle")
+
+    # STEP1: 料金プラン選択
     if "booking-info" not in page.url:
         print(f"[ERROR] 予約ページに遷移できません: {page.url}")
         return False
