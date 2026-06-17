@@ -1,9 +1,9 @@
-name: Futsal Email Monitor
+name: Futsal Web Monitor
 
 on:
   schedule:
     - cron: '* * * * *'  # 1分ごと
-  workflow_dispatch:        # GitHub画面から手動実行も可能
+  workflow_dispatch:
 
 jobs:
   monitor:
@@ -26,20 +26,18 @@ jobs:
           pip install playwright python-dotenv
           playwright install chromium --with-deps
 
-      - name: Run monitor
+      - name: Run web monitor
         env:
-          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
-          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           LABOLA_EMAIL: ${{ secrets.LABOLA_EMAIL }}
           LABOLA_PASSWORD: ${{ secrets.LABOLA_PASSWORD }}
           LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
           LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
-        run: python monitor_futsal_email.py
+        run: python monitor_futsal_web.py
 
       - name: Save state to repo
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add futsal_email_state.json 2>/dev/null || true
-          git diff --staged --quiet || git commit -m "chore: update futsal email monitor state"
+          git add futsal_booked.json 2>/dev/null || true
+          git diff --staged --quiet || git commit -m "chore: update futsal booked state"
           git push 2>/dev/null || true

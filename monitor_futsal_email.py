@@ -41,8 +41,8 @@ IMAP_PORT = 993
 SENDER_KEYWORDS = ["labola", "yoyaku"]
 SUBJECT_KEYWORDS = ["空き", "キャンセル", "空いた", "空枠", "参加可能", "受付開始", "空き枠"]
 
-# 特定イベントを絞りたい場合（空文字にすれば全labola通知を拾う）
-EVENT_KEYWORDS = ["フットサル", "2510257"]
+# 特定イベントを絞りたい場合（空リストにすれば全labola通知を拾う）
+EVENT_KEYWORDS = []
 
 
 def load_state() -> dict:
@@ -164,9 +164,12 @@ def check():
 
         if is_target_mail(subject, sender):
             print(f"[HIT] 対象メール発見: {subject}")
-            send_line_notification(subject, sender, date_str)
             notified_uids.add(uid_str)
             found = True
+            # メール検知 → 即予約実行
+            import asyncio, book_futsal
+            print("[INFO] 予約処理を起動します")
+            asyncio.run(book_futsal.run())
 
     mail.logout()
 
