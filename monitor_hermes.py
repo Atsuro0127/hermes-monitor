@@ -36,8 +36,8 @@ def save_state(state: dict):
 
 
 def send_line_notification(items: list):
-    token = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
-    user_id = os.getenv("LINE_USER_ID")
+    token = (os.getenv("LINE_CHANNEL_ACCESS_TOKEN") or "").strip().lstrip("﻿")
+    user_id = (os.getenv("LINE_USER_ID") or "").strip().lstrip("﻿")
     if not token or not user_id:
         print("[WARN] LINE設定が.envにありません。LINE通知をスキップします。")
         return
