@@ -123,7 +123,8 @@ def is_target_mail(subject: str, sender: str) -> bool:
         or any(kw in subject or kw in sender_lower for kw in EVENT_KEYWORDS)
     )
 
-    return (sender_match or subject_match) and event_match
+    # 件名キーワードは必須（送信元だけでは通過させない）
+    return sender_match and subject_match and event_match
 
 
 def check():
