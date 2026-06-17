@@ -39,7 +39,10 @@ IMAP_PORT = 993
 
 # 通知メールの判定キーワード（件名 or 送信元に含まれるもの）
 SENDER_KEYWORDS = ["labola", "yoyaku"]
-SUBJECT_KEYWORDS = ["空き", "キャンセル", "空いた", "空枠", "参加可能", "受付開始", "空き枠"]
+SUBJECT_KEYWORDS = ["空きが出", "キャンセルが出", "空き枠が", "参加可能になり", "受付を再開"]
+
+# 除外キーワード（これが件名に含まれていたら無視）
+EXCLUDE_KEYWORDS = ["登録完了", "登録のお知らせ", "仮登録", "確認メール"]
 
 # 特定イベントを絞りたい場合（空リストにすれば全labola通知を拾う）
 EVENT_KEYWORDS = []
@@ -69,8 +72,8 @@ def decode_mime_str(value: str) -> str:
 
 
 def send_line_notification(subject: str, sender: str, received_at: str):
-    token = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
-    user_id = os.getenv("LINE_USER_ID")
+    token = (os.getenv("LINE_CHANNEL_ACCESS_TOKEN") or "").strip("﻿").strip()
+    user_id = (os.getenv("LINE_USER_ID") or "").strip("﻿").strip()
     if not token or not user_id:
         print("[WARN] LINE設定が.envにありません。LINE通知をスキップします。")
         return
@@ -109,11 +112,15 @@ def is_target_mail(subject: str, sender: str) -> bool:
     subject_lower = subject.lower()
     sender_lower = sender.lower()
 
+    # 除外キーワードが含まれていたら無視
+    if any(kw in subject for kw in EXCLUDE_KEYWORDS):
+        return False
+
     sender_match = any(kw in sender_lower for kw in SENDER_KEYWORDS)
-    subject_match = any(kw in subject_lower for kw in SUBJECT_KEYWORDS)
+    subject_match = any(kw in subject for kw in SUBJECT_KEYWORDS)
     event_match = (
         not EVENT_KEYWORDS
-        or any(kw in subject_lower or kw in sender_lower for kw in EVENT_KEYWORDS)
+        or any(kw in subject or kw in sender_lower for kw in EVENT_KEYWORDS)
     )
 
     return (sender_match or subject_match) and event_match
