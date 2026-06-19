@@ -191,12 +191,6 @@ async def run():
                 return False
 
             print("[INFO] 空きあり！予約を実行します。")
-            # 空き検知を即通知
-            send_line_notification(
-                f"🔔 空きが出ました！今すぐ自動予約を実行中...\n\n"
-                f"イベントページ: {EVENT_URL}\n\n"
-                "完了したらまたお知らせします！"
-            )
 
             # 予約実行
             success = await book(page)

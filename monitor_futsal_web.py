@@ -42,7 +42,13 @@ async def check_and_book():
         await browser.close()
 
     if count > 0:
-        print("[HIT] 空きを検知！予約処理を開始します。")
+        print("[HIT] 空きを検知！")
+        # 予約処理より先にLINE通知（予約失敗時でも手動対応できるように）
+        book_futsal.send_line_notification(
+            f"🔔 空きが出ました！今すぐ自動予約を実行中...\n\n"
+            f"イベントページ: {EVENT_URL}\n\n"
+            "完了したらまたお知らせします！"
+        )
         await book_futsal.run()
     else:
         print("[INFO] 満席（空きなし）")
