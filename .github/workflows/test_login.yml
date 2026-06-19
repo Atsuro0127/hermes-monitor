@@ -38,5 +38,6 @@ jobs:
           path: |
             login_error.png
             test_login_result.png
+            before_login.png
           if-no-files-found: ignore
           retention-days: 7

@@ -91,7 +91,11 @@ async def login(page) -> bool:
 
     # メールアドレスでログイン
     await code_field.fill(email)
-    await page.locator("#id_password").fill(password)
+    pw_field = page.locator("#id_password")
+    await pw_field.fill(password)
+    filled_val = await pw_field.input_value()
+    print(f"[DEBUG] パスワード入力確認: 長さ={len(filled_val)}文字")
+    await page.screenshot(path="before_login.png")
     await page.get_by_role("button", name="ログイン").click()
     await page.wait_for_load_state("networkidle")
     print(f"[INFO] ログイン後URL: {page.url}")
