@@ -73,26 +73,40 @@ async def login(page) -> bool:
 
     await page.goto(LOGIN_URL)
     await page.wait_for_load_state("networkidle")
+    print(f"[INFO] ログインページURL: {page.url}")
 
     # すでにログイン済みの場合はスキップ
     if "member/login" not in page.url:
         print("[INFO] すでにログイン済み")
         return True
 
+    # フォームの存在確認
+    code_field = page.locator("#id_membership_code")
+    if await code_field.count() == 0:
+        print("[ERROR] ログインフォームが見つかりません（ページ構造変化の可能性）")
+        print(f"[DEBUG] ページタイトル: {await page.title()}")
+        await page.screenshot(path="login_error.png")
+        print("[DEBUG] スクリーンショット保存: login_error.png")
+        return False
+
     # メールアドレスでログイン
-    await page.locator("#id_membership_code").fill(email)
+    await code_field.fill(email)
     await page.locator("#id_password").fill(password)
     await page.get_by_role("button", name="ログイン").click()
     await page.wait_for_load_state("networkidle")
+    print(f"[INFO] ログイン後URL: {page.url}")
 
     if "member/login" in page.url:
         print(f"[ERROR] ログイン失敗 URL: {page.url}")
+        print(f"[DEBUG] ページタイトル: {await page.title()}")
         # フォームのエラーメッセージがあれば出力
         try:
             err = await page.locator(".error, .alert, [class*='error']").first.inner_text()
             print(f"[ERROR] フォームエラー: {err}")
         except Exception:
             pass
+        await page.screenshot(path="login_error.png")
+        print("[DEBUG] スクリーンショット保存: login_error.png")
         return False
 
     print("[INFO] ログイン成功")

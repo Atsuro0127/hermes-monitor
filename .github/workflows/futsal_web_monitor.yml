@@ -34,6 +34,15 @@ jobs:
           LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
         run: python monitor_futsal_web.py
 
+      - name: Upload login error screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: login-error-${{ github.run_id }}
+          path: login_error.png
+          if-no-files-found: ignore
+          retention-days: 3
+
       - name: Save state to repo
         run: |
           git config user.name "github-actions[bot]"
