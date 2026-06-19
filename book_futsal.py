@@ -40,8 +40,8 @@ def mark_as_booked(booking_id: str = ""):
 
 
 def send_line_notification(message: str):
-    token = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
-    user_id = os.getenv("LINE_USER_ID")
+    token = (os.getenv("LINE_CHANNEL_ACCESS_TOKEN") or "").strip("﻿").strip()
+    user_id = (os.getenv("LINE_USER_ID") or "").strip("﻿").strip()
     if not token or not user_id:
         print("[WARN] LINE設定がありません")
         return
@@ -86,7 +86,13 @@ async def login(page) -> bool:
     await page.wait_for_load_state("networkidle")
 
     if "member/login" in page.url:
-        print("[ERROR] ログイン失敗")
+        print(f"[ERROR] ログイン失敗 URL: {page.url}")
+        # フォームのエラーメッセージがあれば出力
+        try:
+            err = await page.locator(".error, .alert, [class*='error']").first.inner_text()
+            print(f"[ERROR] フォームエラー: {err}")
+        except Exception:
+            pass
         return False
 
     print("[INFO] ログイン成功")
