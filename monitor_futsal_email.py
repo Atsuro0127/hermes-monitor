@@ -84,7 +84,7 @@ def send_line_notification(subject: str, sender: str, received_at: str):
         f"送信元: {sender}\n"
         f"受信時刻: {received_at}\n\n"
         "急いで予約サイトを確認してください！\n"
-        "https://yoyaku.labola.jp/r/shop/3078/event/show/2510257/"
+        "https://yoyaku.labola.jp/r/shop/3078/event/show/2510259/"
     )
 
     payload = json.dumps({
