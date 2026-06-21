@@ -92,7 +92,8 @@ async def login(page) -> bool:
     # メールアドレスでログイン
     await code_field.fill(email)
     pw_field = page.locator("#id_password")
-    await pw_field.fill(password)
+    await pw_field.click()
+    await pw_field.type(password)
     filled_val = await pw_field.input_value()
     print(f"[DEBUG] パスワード入力確認: 長さ={len(filled_val)}文字")
     await page.screenshot(path="before_login.png")
