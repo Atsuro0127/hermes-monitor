@@ -19,7 +19,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).parent
 BOOKED_FLAG = BASE_DIR / "futsal_booked.json"
 
-EVENT_ID = "2510258"
+EVENT_ID = "2510259"
 SHOP_ID = "3078"
 EVENT_URL = f"https://yoyaku.labola.jp/r/shop/{SHOP_ID}/event/show/{EVENT_ID}/"
 LOGIN_URL = f"https://yoyaku.labola.jp/r/shop/{SHOP_ID}/member/login/"

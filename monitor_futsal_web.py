@@ -17,7 +17,7 @@ import book_futsal
 
 load_dotenv()
 
-EVENT_ID = "2510258"
+EVENT_ID = "2510259"
 SHOP_ID = "3078"
 EVENT_URL = f"https://yoyaku.labola.jp/r/shop/{SHOP_ID}/event/show/{EVENT_ID}/"
 
